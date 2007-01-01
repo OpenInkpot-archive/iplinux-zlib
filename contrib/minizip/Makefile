@@ -1,5 +1,5 @@
 CC=cc
-CFLAGS=-O2 -g -I../..
+CFLAGS=$(OPT) -I../.. -Dunix
 
 UNZ_OBJS = miniunz.o unzip.o ioapi.o
 ZIP_OBJS = minizip.o zip.o   ioapi.o
