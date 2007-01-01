@@ -21,3 +21,5 @@ contrib/minizip/miniunz
 contrib/minizip/minizip
 debian/zlib1g-dev
 debian/files
+minigzipsh
+examplesh
