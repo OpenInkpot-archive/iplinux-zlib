@@ -9,8 +9,7 @@ Package: zlib1g
 Architecture: any
 Depends: ${shlibs:Depends}
 Priority: required
-Conflicts: zlib1 (<= 1:1.0.4-7), zlib1g-udeb
-Replaces: zlib1g-udeb
+Conflicts: zlib1 (<= 1:1.0.4-7)
 Provides: libz1
 Description: compression library - runtime
  zlib is a library implementing the deflate compression method found
