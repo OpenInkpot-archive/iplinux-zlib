@@ -1,0 +1,266 @@
+#!/usr/bin/make -f
+
+VERSION:=$(shell LC_ALL=C dpkg-parsechangelog | grep '^Version:' | \
+		 sed -e 's/^Version: *//' -e 's/-.*$$//' -e 's/^.*://')
+SONAME=1
+
+ifneq ($(INSTALL_DOCS),yes)
+ nodocs=\#
+endif
+
+include debian/vars
+BUILD_TREE = $(SOURCE_DIR)/$(TAR_DIR)
+
+DEB_BUILD_ARCH := $(shell dpkg-architecture -qDEB_BUILD_ARCH)
+DEB_BUILD_GNU_CPU := $(shell dpkg-architecture -qDEB_BUILD_GNU_CPU)
+DEB_BUILD_GNU_SYSTEM := $(shell dpkg-architecture -qDEB_BUILD_GNU_SYSTEM)
+DEB_BUILD_GNU_TYPE=$(DEB_BUILD_GNU_CPU)-$(DEB_BUILD_GNU_SYSTEM)
+DEB_HOST_ARCH=$(shell dpkg-architecture -qDEB_HOST_ARCH)
+DEB_HOST_GNU_CPU=$(shell dpkg-architecture -qDEB_BUILD_GNU_CPU)
+DEB_HOST_GNU_SYSTEM=$(shell dpkg-architecture -qDEB_BUILD_GNU_SYSTEM)
+DEB_HOST_GNU_TYPE=$(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
+DH_OPTIONS=
+
+ifeq ($(DEB_HOST_GNU_TYPE),$(DEB_BUILD_GNU_TYPE))
+TESTS=test
+CC=gcc
+else
+CC=$(DEB_HOST_GNU_TYPE)-gcc
+endif
+
+64-ARCHS=s390 sparc
+ifneq (,$(findstring $(DEB_HOST_ARCH), $(64-ARCHS)))
+DOBUILD		+= $(STAMP_DIR)/build-64 $(STAMP_DIR)/build-64-nopic
+DOBINARY	:= binary-lib64z1 binary-lib64z1-dev
+endif
+
+32-ARCHS=amd64 ppc64
+ifneq (,$(findstring $(DEB_HOST_ARCH), $(32-ARCHS)))
+DOBUILD		+= $(STAMP_DIR)/build-32 $(STAMP_DIR)/build-32-nopic
+DOBINARY	:= binary-lib32z1 binary-lib32z1-dev
+endif
+
+# Did the user want to turn optimisation off for some reason?
+ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
+CFLAGS=-O0
+else
+# Temporary bodge for m68k - use less optimisation to work around an ICE.
+ifneq (,$(findstring $(DEB_HOST_ARCH), m68k))
+CFLAGS=-O2
+else
+# By default, optimise heavily.
+CFLAGS=-O3
+endif
+endif
+
+DVERSION=$(shell dpkg-parsechangelog | grep ^Version: | cut -d ':' -f 3)
+
+clean:
+	dh_testdir
+	$(MAKE) -f /usr/share/dbs/sys-build.mk source.clean
+	dh_clean
+	rm -rf debian/nopic-tmp
+
+$(STAMP_DIR)/source.make:
+	$(MAKE) -f /usr/share/dbs/sys-build.mk source.make
+
+make-diff:
+	$(MAKE) -f /usr/share/dbs/sys-build.mk make-diff
+
+build: $(STAMP_DIR)/build
+$(STAMP_DIR)/build: $(STAMP_DIR)/source.make $(DOBUILDCOMPAT)
+	dh_testdir
+	cd $(BUILD_TREE) && CC=$(CC) CFLAGS="$(CFLAGS) -g -D_REENTRANT -fPIC" ./configure --shared
+	$(MAKE) -C $(BUILD_TREE) all libz.a $(TESTS)
+	$(MAKE) CC=$(CC) OPT=$(CFLAGS) -C $(BUILD_TREE)/contrib/minizip
+	touch $@
+
+$(STAMP_DIR)/build-64: $(STAMP_DIR)/source.make
+	dh_testdir
+	cd $(BUILD_TREE) && CC="$(CC) -m64" CFLAGS="$(CFLAGS) -g -D_REENTRANT -fPIC" ./configure --shared
+	$(MAKE) -C $(BUILD_TREE) clean
+	$(MAKE) -C $(BUILD_TREE) all libz.a $(TESTS)
+	touch $@
+
+$(STAMP_DIR)/build-32: $(STAMP_DIR)/source.make
+	dh_testdir
+	cd $(BUILD_TREE) && CC="$(CC) -m32" CFLAGS="$(CFLAGS) -g -D_REENTRANT -fPIC" ./configure --shared
+	$(MAKE) -C $(BUILD_TREE) clean
+	$(MAKE) -C $(BUILD_TREE) all libz.a $(TESTS)
+	touch $@
+
+$(STAMP_DIR)/build-nopic: $(STAMP_DIR)/source.make
+	dh_testdir
+	mkdir -p debian/nopic-tmp
+	cd $(BUILD_TREE) && CC=$(CC) CFLAGS="$(CFLAGS) -D_REENTRANT" ./configure
+	$(MAKE) -C $(BUILD_TREE) clean
+	$(MAKE) -C $(BUILD_TREE) all libz.a $(TESTS)
+	$(MAKE) -C $(BUILD_TREE) install prefix=$(CURDIR)/debian/nopic-tmp
+	install -m 644 $(BUILD_TREE)/libz.a debian/nopic-tmp/lib/libz.a
+	$(MAKE) -C $(BUILD_TREE) clean
+	touch $@
+
+$(STAMP_DIR)/build-64-nopic: $(STAMP_DIR)/source.make
+	dh_testdir
+	mkdir -p debian/nopic-tmp
+	cd $(BUILD_TREE) && CC="$(CC) -m64" CFLAGS="$(CFLAGS) -D_REENTRANT" ./configure --libdir=\$${prefix}/lib64
+	$(MAKE) -C $(BUILD_TREE) clean
+	$(MAKE) -C $(BUILD_TREE) all libz.a $(TESTS)
+	$(MAKE) -C $(BUILD_TREE) install prefix=$(CURDIR)/debian/nopic-tmp
+	install -m 644 $(BUILD_TREE)/libz.a debian/nopic-tmp/lib64/libz.a
+	$(MAKE) -C $(BUILD_TREE) clean
+	touch $@
+
+$(STAMP_DIR)/build-32-nopic: $(STAMP_DIR)/source.make
+	dh_testdir
+	mkdir -p debian/nopic-tmp
+	cd $(BUILD_TREE) && CC="$(CC) -m32" CFLAGS="$(CFLAGS) -D_REENTRANT" ./configure --libdir=\$${prefix}/emul/ia32-linux/usr/lib/
+	$(MAKE) -C $(BUILD_TREE) clean
+	$(MAKE) -C $(BUILD_TREE) all libz.a $(TESTS)
+	$(MAKE) -C $(BUILD_TREE) install prefix=$(CURDIR)/debian/nopic-tmp
+	install -m 644 $(BUILD_TREE)/libz.a debian/nopic-tmp/emul/ia32-linux/usr/lib/libz.a
+	$(MAKE) -C $(BUILD_TREE) clean
+	touch $@
+
+binary-indep:
+
+binary-arch: binary-zlib1g binary-zlib1g-dev binary-zlib-bin $(DOBINARY)
+
+pkg = $(patsubst binary-%,%,$@)
+
+middle-binary-zlib1g-dev: tmpdir = $(CURDIR)/debian/zlib1g-dev
+middle-binary-zlib-bin: tmpdir = $(CURDIR)/debian/zlib-bin
+middle-binary-zlib1g: tmpdir = $(CURDIR)/debian/zlib1g
+middle-binary-lib64z1: tmpdir = $(CURDIR)/debian/lib64z1
+middle-binary-lib64z1-dev: tmpdir = $(CURDIR)/debian/lib64z1-dev
+middle-binary-lib32z1: tmpdir = $(CURDIR)/debian/lib32z1
+middle-binary-lib32z1-dev: tmpdir = $(CURDIR)/debian/lib32z1-dev
+post-binary-zlib1g-dev: tmpdir = $(CURDIR)/debian/zlib1g-dev
+post-binary-zlib-bin: tmpdir = $(CURDIR)/debian/zlib-bin
+post-binary-zlib1g: tmpdir = $(CURDIR)/debian/zlib1g
+
+post-binary-zlib1g: changelog = $(BUILD_TREE)/ChangeLog
+post-binary-zlib1g: docs = $(BUILD_TREE)/README
+
+post-binary-zlib1g-dev: docs = $(BUILD_TREE)/FAQ $(BUILD_TREE)/README $(BUILD_TREE)/algorithm.txt
+post-binary-zlib1g-dev: examples = $(BUILD_TREE)/example.c $(BUILD_TREE)/minigzip.c
+post-binary-zlib1g-dev: changelog = $(BUILD_TREE)/ChangeLog
+post-binary-zlib1g-dev: manpages3 = $(BUILD_TREE)/zlib.3
+
+post-binary-zlib-bin: changelog =  $(BUILD_TREE)/contrib/minizip/ChangeLogUnzip
+post-binary-zlib-bin: manpages1 = debian/minizip.1 debian/miniunzip.1
+
+allpkgs = zlib1g-dev zlib1g zlib-bin lib64z1 lib64z1-dev lib32z1 lib32z1-dev
+$(patsubst %,binary-%,$(allpkgs)): DH_OPTIONS += -p$(pkg)
+
+$(patsubst %,binary-%,$(allpkgs)): binary-%: pre-binary-%
+$(patsubst %,binary-%,$(allpkgs)): binary-%: middle-binary-%
+$(patsubst %,binary-%,$(allpkgs)): binary-%: post-binary-%
+
+$(patsubst %,pre-binary-%,$(allpkgs)): pkg = $(patsubst pre-binary-%,%,$@)
+$(patsubst %,middle-binary-%,$(allpkgs)): pkg = $(patsubst middle-binary-%,%,$@)
+$(patsubst %,post-binary-%,$(allpkgs)): pkg = $(patsubst post-binary-%,%,$@)
+
+post-binary-zlib1-altdev: nodocs=\#
+
+pre-binary-%: $(STAMP_DIR)/build
+	dh_testdir $(DH_OPTIONS)
+	dh_testroot $(DH_OPTIONS)
+	dh_clean -k $(DH_OPTIONS)
+	dh_installdirs $(DH_OPTIONS)
+	dh_link $(DH_OPTIONS)
+
+post-binary-%: $(STAMP_DIR)/build
+	$(nodocs)if [ "$(manpages1)" != "" ]; then cp $(manpages1) $(tmpdir)/usr/share/man/man1 ; fi
+	$(nodocs)if [ "$(manpages3)" != "" ]; then cp $(manpages3) $(tmpdir)/usr/share/man/man3 ; fi
+	$(nodocs)dh_installexamples $(DH_OPTIONS) $(examples)
+	$(nodocs)dh_installchangelogs $(DH_OPTIONS) $(changelog)
+	$(nodocs)dh_installdocs $(DH_OPTIONS) $(docs)
+	dh_installdeb $(DH_OPTIONS)
+	dh_shlibdeps $(DH_OPTIONS) -l$(BUILD_TREE)
+	dh_compress $(DH_OPTIONS)
+	dh_strip $(DH_OPTIONS)
+	dh_md5sums $(DH_OPTIONS)
+	dh_fixperms $(DH_OPTIONS)
+	dh_gencontrol $(DH_OPTIONS)
+	dh_builddeb $(DH_OPTIONS)
+
+post-binary-zlib-bin: $(STAMP_DIR)/build
+	$(nodocs)if [ "$(manpages1)" != "" ]; then cp $(manpages1) $(tmpdir)/usr/share/man/man1 ; fi
+	$(nodocs)if [ "$(manpages3)" != "" ]; then cp $(manpages3) $(tmpdir)/usr/share/man/man3 ; fi
+	$(nodocs)dh_installexamples $(DH_OPTIONS) $(examples)
+	$(nodocs)dh_installchangelogs $(DH_OPTIONS) $(changelog)
+	$(nodocs)dh_installdocs $(DH_OPTIONS) $(docs)
+	dh_installdeb $(DH_OPTIONS)
+	dh_shlibdeps $(DH_OPTIONS) -l$(BUILD_TREE) -- -Ldebian/shlibs
+	dh_compress $(DH_OPTIONS)
+	dh_strip $(DH_OPTIONS)
+	dh_md5sums $(DH_OPTIONS)
+	dh_fixperms $(DH_OPTIONS)
+	dh_gencontrol $(DH_OPTIONS)
+	dh_builddeb $(DH_OPTIONS)
+
+post-binary-lib64z1: $(STAMP_DIR)/build-64
+	dh_installchangelogs $(DH_OPTIONS) $(changelog)
+	dh_installdocs $(DH_OPTIONS) $(docs)
+	dh_installdeb $(DH_OPTIONS)
+	dh_shlibdeps $(DH_OPTIONS) -l$(BUILD_TREE)
+	dh_compress $(DH_OPTIONS)
+	dh_strip $(DH_OPTIONS)
+	dh_fixperms $(DH_OPTIONS)
+	dh_gencontrol $(DH_OPTIONS)
+	dh_builddeb $(DH_OPTIONS)
+
+post-binary-lib32z1: $(STAMP_DIR)/build-32
+	dh_installchangelogs $(DH_OPTIONS) $(changelog)
+	dh_installdocs $(DH_OPTIONS) $(docs)
+	dh_installdeb $(DH_OPTIONS)
+	dh_shlibdeps $(DH_OPTIONS) -l$(BUILD_TREE)
+	dh_compress $(DH_OPTIONS)
+	dh_strip $(DH_OPTIONS)
+	dh_fixperms $(DH_OPTIONS)
+	dh_gencontrol $(DH_OPTIONS)
+	dh_builddeb $(DH_OPTIONS)
+
+middle-binary-zlib1g: $(STAMP_DIR)/build
+	install -m 644 -s $(BUILD_TREE)/libz.so.$(VERSION) $(tmpdir)/usr/lib/libz.so.$(VERSION)
+	ln -s libz.so.$(VERSION) $(tmpdir)/usr/lib/libz.so.$(SONAME)
+
+middle-binary-zlib1g-dev: $(STAMP_DIR)/build-nopic
+	install -m 644 debian/nopic-tmp/lib/libz.a \
+		$(tmpdir)/usr/lib/libz.a
+	ln -s libz.so.1 $(tmpdir)/usr/lib/libz.so
+	install -m 644 $(BUILD_TREE)/zlib.h $(BUILD_TREE)/zconf.h $(tmpdir)/usr/include/
+	tar cf $(tmpdir)/usr/share/doc/zlib1g-dev/examples/contrib.tar --force-local -C $(BUILD_TREE)/contrib .
+
+middle-binary-zlib-bin: $(STAMP_DIR)/build
+	install -m 755 $(BUILD_TREE)/contrib/minizip/minizip $(tmpdir)/usr/bin/
+	install -m 755 $(BUILD_TREE)/contrib/minizip/miniunz $(tmpdir)/usr/bin/miniunzip
+
+middle-binary-lib64z1: $(STAMP_DIR)/build-64
+	install -m 644 -s $(BUILD_TREE)/libz.so.$(VERSION) $(tmpdir)/usr/lib64/libz.so.$(VERSION)
+	ln -s libz.so.$(VERSION) $(tmpdir)/usr/lib64/libz.so.$(SONAME)
+
+middle-binary-lib64z1-dev: $(STAMP_DIR)/build-64-nopic
+	install -m 644 debian/nopic-tmp/lib64/libz.a \
+		$(tmpdir)/usr/lib64/libz.a
+	ln -s libz.so.1 $(tmpdir)/usr/lib64/libz.so
+
+middle-binary-lib32z1: $(STAMP_DIR)/build-32
+	install -m 644 -s $(BUILD_TREE)/libz.so.$(VERSION) $(tmpdir)/emul/ia32-linux/usr/lib/libz.so.$(VERSION)
+	ln -s libz.so.$(VERSION) $(tmpdir)/emul/ia32-linux/usr/lib/libz.so.$(SONAME)
+
+middle-binary-lib32z1-dev: $(STAMP_DIR)/build-32-nopic
+	install -m 644 debian/nopic-tmp/emul/ia32-linux/usr/lib/libz.a \
+		$(tmpdir)/emul/ia32-linux/usr/lib/libz.a
+	ln -s libz.so.1 $(tmpdir)/emul/ia32-linux/usr/lib/libz.so
+
+# Below here is fairly generic really
+
+binary:		binary-indep binary-arch
+
+checkroot:
+	$(checkdir)
+	test root = "`whoami`"
+
+.PHONY: binary clean checkroot
