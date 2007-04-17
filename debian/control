@@ -39,7 +39,6 @@ Package: zlib1g-udeb
 XC-Package-Type: udeb
 Architecture: any
 Priority: optional
-Provides: zlib1g
 Section: debian-installer
 Description: compression library - runtime for Debian installer
  zlib is a library implementing the deflate compression method found
