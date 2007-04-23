@@ -26,6 +26,16 @@ Description: compression library - development
  in gzip and PKZIP.  This package includes the development support
  files.
 
+Package: zlib1g-dbg
+Section: libdevel
+Architecture: any
+Depends: zlib1g (= ${Source-Version})
+Provides: libz-dbg
+Description: compression library - development
+ zlib is a library implementing the deflate compression method found
+ in gzip and PKZIP.  This package includes debugging symbols for use
+ when debugging applications which use zlib.
+
 Package: zlib-bin
 Section: utils
 Architecture: any
@@ -65,6 +75,16 @@ Description: compression library - 64 bit development
  in gzip and PKZIP.  This package includes the development support
  files for building 64 bit applications.
 
+Package: lib64z1-dbg
+Section: libdevel
+Architecture: sparc s390 i386 powerpc
+Depends: lib64z1 (= ${Source-Version})
+Provides: lib64z-dbg
+Description: compression library - 64 bit debugging symbols
+ zlib is a library implementing the deflate compression method found
+ in gzip and PKZIP.  This package includes debugging symbols for use
+ when debugging 64 bit applications which use zlib.
+
 Package: lib32z1
 Architecture: amd64 ppc64
 Depends: ${shlibs:Depends}
@@ -84,3 +104,13 @@ Description: compression library - 32 bit development
  zlib is a library implementing the deflate compression method found
  in gzip and PKZIP.  This package includes the development support
  files for building 32 bit applications.
+
+Package: lib32z1-dbg
+Section: libdevel
+Architecture: amd64 ppc64
+Depends: lib32z1 (= ${Source-Version})
+Provides: lib32z-dbg
+Description: compression library - 32 bit debugging symbols
+ zlib is a library implementing the deflate compression method found
+ in gzip and PKZIP.  This package includes debugging symbols for use
+ when debugging 32 bit applications which use zlib.

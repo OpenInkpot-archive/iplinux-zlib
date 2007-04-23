@@ -80,7 +80,7 @@ binary-arch: build install
 	cp contrib/minizip/miniunz debian/zlib-bin/usr/bin/miniunzip
 	dh_installman -s
 	dh_link -s
-	dh_strip -s
+	dh_strip -s --dbg-package=zlib1g-dbg
 	dh_compress -s
 	dh_fixperms -s
 	dh_makeshlibs -s
