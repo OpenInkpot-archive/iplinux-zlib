@@ -3,6 +3,7 @@ Section: libs
 Priority: optional
 Maintainer: Alexander Shishkin <alexander.shishkin@siemens.com>
 Standards-Version: 3.6.2
+XCS-Cross-Host-Build-Depends: debhelper (>= 4.2), dbs (>= 0.21), cross-toolchain
 Build-Depends: debhelper (>= 4.2), dbs (>= 0.21), cross-toolchain
 
 Package: zlib1g
