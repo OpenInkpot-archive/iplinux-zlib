@@ -7,7 +7,7 @@ XCS-Cross-Host-Build-Depends: debhelper (>= 4.2), dbs (>= 0.21), cross-toolchain
 Build-Depends: debhelper (>= 4.2), dbs (>= 0.21), cross-toolchain
 
 Package: zlib1g
-Section: host-tools
+Section: core
 Architecture: any
 Depends: ${shlibs:Depends}
 Priority: required
@@ -18,7 +18,7 @@ Description: compression library - runtime
  in gzip and PKZIP.  This package includes the shared library.
 
 Package: zlib1g-dev
-Section: host-tools
+Section: libdevel
 Architecture: any
 Depends: zlib1g (= ${Source-Version}), libc6-dev | libc-dev | libuclibc-dev
 Conflicts: zlib1-dev
