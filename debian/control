@@ -20,7 +20,7 @@ Description: compression library - runtime
 Package: zlib1g-dev
 Section: core
 Architecture: any
-Depends: zlib1g (= ${Source-Version}), libc6-dev | libc-dev | libuclibc-dev
+Depends: zlib1g (= ${Source-Version}), cross-toolchain
 Conflicts: zlib1-dev
 Provides: libz-dev
 Description: compression library - development

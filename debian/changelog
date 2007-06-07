@@ -1,3 +1,9 @@
+zlib (1:1.2.3-4.slind3) testing; urgency=low
+
+  * Fix of build depends
+
+ -- Sergey Lapin <slapin@slind.org>  Thu, 07 Jun 2007 17:19:30 +0400
+
 zlib (1:1.2.3-4.slind2) testing; urgency=low
 
   * New build dependencies
