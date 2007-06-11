@@ -8,6 +8,21 @@ zlib (1:1.2.3.3-1) unstable; urgency=low
 
  -- Mark Brown <broonie@debian.org>  Mon, 23 Apr 2007 23:33:01 +0100
 
+zlib (1:1.2.3-15) unstable; urgency=low
+
+  * Apparently gcc-multilib is actually a replacement for the arch-specific
+    GCCs (closes: #424657).
+
+ -- Mark Brown <broonie@debian.org>  Wed, 16 May 2007 20:56:52 +0100
+
+zlib (1:1.2.3-14) unstable; urgency=low
+
+  * The vibrations tell me that cross builds need to build depend on
+    gcc-multilib.
+  * Remove Provides: zlib1g from udeb (closes: #419603).
+
+ -- Mark Brown <broonie@debian.org>  Sat, 12 May 2007 11:10:32 +0100
+
 zlib (1:1.2.3-13) unstable; urgency=low
 
   * Add dependency from lib32z1-dev to lib32c-dev (closes: #376854).
