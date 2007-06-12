@@ -27,3 +27,4 @@ debian/lib32z1-dbg
 debian/lib64z1-dbg
 debian/zlib1g-dbg
 debian/zlib-bin.substvars
+.pc

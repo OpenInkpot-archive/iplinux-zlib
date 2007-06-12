@@ -3,7 +3,7 @@ Section: libs
 Priority: optional
 Maintainer: Mark Brown <broonie@debian.org>
 Standards-Version: 3.6.2
-Build-Depends: debhelper (>= 4.2), gcc-multilib [amd64 i386 kfreebsd-amd64 powerpc ppc64 s390 sparc]
+Build-Depends: debhelper (>= 4.2), quilt, gcc-multilib [amd64 i386 kfreebsd-amd64 powerpc ppc64 s390 sparc]
 
 Package: zlib1g
 Architecture: any
