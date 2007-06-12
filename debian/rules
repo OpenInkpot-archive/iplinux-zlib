@@ -24,6 +24,8 @@ else
 	CFLAGS += -O3
 endif
 
+COPYLIST=*.h *.c *.in zlib.map configure zlib.3
+
 configure-stamp: configure patch
 	dh_testdir
 
@@ -34,14 +36,27 @@ configure-stamp: configure patch
 
 	touch $@
 
-build: build-stamp
+configure64-stamp: configure patch
+	dh_testdir
+
+	mkdir -p debian/64
+	cp $(COPYLIST) debian/64
+	cd debian/64 && CC="$(DEB_HOST_GNU_TYPE)-gcc -m64" CFLAGS="$(CFLAGS)" ./configure --shared --prefix=/usr
+	touch $@
+
+build: build-stamp build64-stamp
 build-stamp: configure-stamp
 	dh_testdir
 
 	$(MAKE)
-	$(MAKE) CC=$(CC) OPT="$(CFLAGS)" -C contrib/minizip
-	$(MAKE) test
+	$(MAKE) CC=$(DEB_HOST_GNU_TYPE)-gcc OPT="$(CFLAGS)" -C contrib/minizip
+	-$(MAKE) test
 
+	touch $@
+
+build64-stamp: configure64-stamp
+	dh_testdir
+	make -C debian/64
 	touch $@
 
 clean: unpatch
@@ -51,7 +66,8 @@ clean: unpatch
 	-$(MAKE) -C contrib/minizip clean
 	-$(MAKE) distclean
 
-	rm -f build-stamp configure-stamp foo.gz
+	rm -f build-stamp configure-stamp foo.gz 
+	rm -rf debian/64 build64-stamp configure64-stamp
 	-mv Makefile.stash Makefile
 	-mv zlibdefs.h.stash zlibdefs.h
 
@@ -65,19 +81,24 @@ install: build
 
 	$(MAKE) prefix=$(CURDIR)/debian/tmp/usr install
 
+install64: install build64-stamp
+	$(MAKE) -C debian/64 prefix=$(CURDIR)/debian/tmp/usr/64 install
+
 # Build architecture-independent files here.
 binary-indep: build install
 # We have nothing to do by default.
 
 # Build architecture-dependent files here.
-binary-arch: build install
+binary-arch: build install install64
 	dh_testdir
 	dh_testroot
 	dh_installchangelogs -s ChangeLog
 	dh_installdocs -s
 	dh_installexamples -s
-	dh_install -s
-	cp contrib/minizip/miniunz debian/zlib-bin/usr/bin/miniunzip
+	mkdir -p debian/tmp/usr/bin
+	cp contrib/minizip/minizip debian/tmp/usr/bin
+	cp contrib/minizip/miniunz debian/tmp/usr/bin/miniunzip
+	dh_install -s --sourcedir=debian/tmp
 	dh_installman -s
 	dh_link -s
 	dh_strip -s --dbg-package=zlib1g-dbg
@@ -91,4 +112,4 @@ binary-arch: build install
 	dh_builddeb -s
 
 binary: binary-indep binary-arch
-.PHONY: build clean binary-indep binary-arch binary install 
+.PHONY: build clean binary-indep binary-arch binary install install64

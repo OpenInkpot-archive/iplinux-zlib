@@ -1,1 +1,2 @@
-contrib/minizip/minizip usr/bin
+usr/bin/minizip
+usr/bin/miniunzip
