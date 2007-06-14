@@ -1,7 +1,7 @@
 Source: zlib
 Section: core
 Priority: optional
-Maintainer: Alexander Shishkin <alexander.shishkin@siemens.com>
+Maintainer: Alexander Shishkin <virtuoso@slind.org>
 Standards-Version: 3.6.2
 XCS-Cross-Host-Build-Depends: debhelper (>= 4.2), dbs (>= 0.21), cross-toolchain
 Build-Depends: debhelper (>= 4.2), dbs (>= 0.21), cross-toolchain
