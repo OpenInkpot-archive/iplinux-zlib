@@ -18,7 +18,7 @@ Description: compression library - runtime
 Package: zlib1g-dev
 Section: libdevel
 Architecture: any
-Depends: zlib1g (= ${Source-Version}), libc6-dev | libc-dev
+Depends: zlib1g (= ${binary:Version}), libc6-dev | libc-dev
 Conflicts: zlib1-dev
 Provides: libz-dev
 Description: compression library - development
@@ -29,7 +29,7 @@ Description: compression library - development
 Package: zlib1g-dbg
 Section: libdevel
 Architecture: any
-Depends: zlib1g (= ${Source-Version})
+Depends: zlib1g (= ${binary:Version})
 Provides: libz-dbg
 Description: compression library - development
  zlib is a library implementing the deflate compression method found
@@ -67,7 +67,7 @@ Description: compression library - 64 bit runtime
 Package: lib64z1-dev
 Section: libdevel
 Architecture: sparc s390 i386 powerpc
-Depends: lib64z1 (= ${Source-Version}), zlib1g-dev (= ${Source-Version}), lib64c-dev
+Depends: lib64z1 (= ${binary:Version}), zlib1g-dev (= ${binary:Version}), lib64c-dev
 Replaces: amd64-libs-dev (<< 1.4)
 Provides: lib64z-dev
 Description: compression library - 64 bit development
@@ -87,7 +87,7 @@ Description: compression library - 32 bit runtime
 Package: lib32z1-dev
 Section: libdevel
 Architecture: amd64 ppc64
-Depends: lib32z1 (= ${Source-Version}), zlib1g-dev (= ${Source-Version}), lib32c-dev
+Depends: lib32z1 (= ${binary:Version}), zlib1g-dev (= ${binary:Version}), lib32c-dev
 Provides: lib32z-dev
 Replaces: ia32-libs-dev (<< 1.5)
 Description: compression library - 32 bit development
