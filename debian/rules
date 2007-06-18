@@ -14,7 +14,7 @@ include /usr/share/quilt/quilt.make
 # These are used for cross-compiling and for saving the configure script
 # from having to guess our platform (since we know it already)
 DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
-DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
+DEB_HOST_ARCH       ?= $(shell dpkg-architecture -qDEB_HOST_ARCH)
 
 CFLAGS = -Wall -g -D_REENTRANT
 
@@ -23,6 +23,19 @@ ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
 else
 	CFLAGS += -O3
 endif
+
+64-ARCHS=s390 sparc i386 powerpc
+ifneq (,$(findstring $(DEB_HOST_ARCH), $(64-ARCHS)))
+EXTRA_INSTALL=install64
+EXTRA_BUILD=build64-stamp
+endif
+
+32-ARCHS=amd64 ppc64
+ifneq (,$(findstring $(DEB_HOST_ARCH), $(32-ARCHS)))
+EXTRA_INSTALL=install32
+EXTRA_BUILD=build32-stamp
+endif
+
 
 COPYLIST=*.h *.c *.in zlib.map configure zlib.3
 
@@ -44,7 +57,7 @@ configure64-stamp: configure patch
 	cd debian/64 && CC="$(DEB_HOST_GNU_TYPE)-gcc -m64" CFLAGS="$(CFLAGS)" ./configure --shared --prefix=/usr
 	touch $@
 
-build: build-stamp build64-stamp
+build: build-stamp $(EXTRA_BUILD)
 build-stamp: configure-stamp
 	dh_testdir
 
@@ -89,7 +102,8 @@ binary-indep: build install
 # We have nothing to do by default.
 
 # Build architecture-dependent files here.
-binary-arch: build install install64
+binary-arch: build install $(EXTRA_INSTALL)
+	echo $(EXTRA_INSTALL)
 	dh_testdir
 	dh_testroot
 	dh_installchangelogs -s ChangeLog
@@ -112,4 +126,4 @@ binary-arch: build install install64
 	dh_builddeb -s
 
 binary: binary-indep binary-arch
-.PHONY: build clean binary-indep binary-arch binary install install64
+.PHONY: build clean binary-indep binary-arch binary install install64 install32
