@@ -57,6 +57,14 @@ configure64-stamp: configure patch
 	cd debian/64 && CC="$(DEB_HOST_GNU_TYPE)-gcc -m64" CFLAGS="$(CFLAGS)" ./configure --shared --prefix=/usr
 	touch $@
 
+configure32-stamp: configure patch
+	dh_testdir
+
+	mkdir -p debian/32
+	cp $(COPYLIST) debian/32
+	cd debian/64 && CC="$(DEB_HOST_GNU_TYPE)-gcc -m32" CFLAGS="$(CFLAGS)" ./configure --shared --prefix=/usr
+	touch $@
+
 build: build-stamp $(EXTRA_BUILD)
 build-stamp: configure-stamp
 	dh_testdir
@@ -72,6 +80,11 @@ build64-stamp: configure64-stamp
 	make -C debian/64
 	touch $@
 
+build32-stamp: configure32-stamp
+	dh_testdir
+	make -C debian/32
+	touch $@
+
 clean: unpatch
 	dh_testdir
 	dh_testroot
@@ -81,6 +94,7 @@ clean: unpatch
 
 	rm -f build-stamp configure-stamp foo.gz 
 	rm -rf debian/64 build64-stamp configure64-stamp
+	rm -rf debian/32 build32-stamp configure32-stamp
 	-mv Makefile.stash Makefile
 	-mv zlibdefs.h.stash zlibdefs.h
 
@@ -96,6 +110,9 @@ install: build
 
 install64: install build64-stamp
 	$(MAKE) -C debian/64 prefix=$(CURDIR)/debian/tmp/usr/64 install
+
+install32: install build32-stamp
+	$(MAKE) -C debian/32 prefix=$(CURDIR)/debian/tmp/usr/32 install
 
 # Build architecture-independent files here.
 binary-indep: build install
