@@ -62,7 +62,7 @@ configure32-stamp: configure patch
 
 	mkdir -p debian/32
 	cp $(COPYLIST) debian/32
-	cd debian/64 && CC="$(DEB_HOST_GNU_TYPE)-gcc -m32" CFLAGS="$(CFLAGS)" ./configure --shared --prefix=/usr
+	cd debian/32 && CC="$(DEB_HOST_GNU_TYPE)-gcc -m32" CFLAGS="$(CFLAGS)" ./configure --shared --prefix=/usr
 	touch $@
 
 build: build-stamp $(EXTRA_BUILD)
