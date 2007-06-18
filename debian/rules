@@ -120,7 +120,6 @@ binary-indep: build install
 
 # Build architecture-dependent files here.
 binary-arch: build install $(EXTRA_INSTALL)
-	echo $(EXTRA_INSTALL)
 	dh_testdir
 	dh_testroot
 	dh_installchangelogs -s ChangeLog
