@@ -54,7 +54,7 @@ configure64-stamp: configure patch
 
 	mkdir -p debian/64
 	cp $(COPYLIST) debian/64
-	cd debian/64 && CC="$(DEB_HOST_GNU_TYPE)-gcc -m64" CFLAGS="$(CFLAGS)" ./configure --shared --prefix=/usr
+	cd debian/64 && CC="$(DEB_HOST_GNU_TYPE)-gcc -m64" CFLAGS="$(CFLAGS)" ./configure --shared --prefix=/usr  --libdir=\$${prefix}/usr/lib64
 	touch $@
 
 configure32-stamp: configure patch
@@ -62,7 +62,7 @@ configure32-stamp: configure patch
 
 	mkdir -p debian/32
 	cp $(COPYLIST) debian/32
-	cd debian/32 && CC="$(DEB_HOST_GNU_TYPE)-gcc -m32" CFLAGS="$(CFLAGS)" ./configure --shared --prefix=/usr
+	cd debian/32 && CC="$(DEB_HOST_GNU_TYPE)-gcc -m32" CFLAGS="$(CFLAGS)" ./configure --shared --prefix=/usr --libdir=\$${prefix}/usr/lib32
 	touch $@
 
 build: build-stamp $(EXTRA_BUILD)
@@ -109,10 +109,10 @@ install: build
 	$(MAKE) prefix=$(CURDIR)/debian/tmp/usr install
 
 install64: install build64-stamp
-	$(MAKE) -C debian/64 prefix=$(CURDIR)/debian/tmp/usr/64 install
+	$(MAKE) -C debian/64 prefix=$(CURDIR)/debian/tmp install
 
 install32: install build32-stamp
-	$(MAKE) -C debian/32 prefix=$(CURDIR)/debian/tmp/usr/32 install
+	$(MAKE) -C debian/32 prefix=$(CURDIR)/debian/tmp install
 
 # Build architecture-independent files here.
 binary-indep: build install
