@@ -1,3 +1,9 @@
+zlib (1:1.2.3.3.dfsg-2) unstable; urgency=low
+
+  * Add XS-VCS-Bzr.
+
+ -- Mark Brown <broonie@debian.org>  Fri, 22 Jun 2007 13:36:26 +0100
+
 zlib (1:1.2.3.3.dfsg-1) unstable; urgency=low
 
   * New upstream release.
