@@ -1,3 +1,10 @@
+zlib (1:1.2.3.3.dfsg-3) unstable; urgency=low
+
+  * Support building with UNALIGNED_OK and enable it on i386 and amd64.
+    This seems to provide a small speedup in my tests (closes: #386357).
+
+ -- Mark Brown <broonie@debian.org>  Sat, 23 Jun 2007 15:19:29 +0100
+
 zlib (1:1.2.3.3.dfsg-2) unstable; urgency=low
 
   * Add XS-VCS-Bzr.

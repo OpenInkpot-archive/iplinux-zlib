@@ -36,6 +36,10 @@ EXTRA_INSTALL=install32
 EXTRA_BUILD=build32-stamp
 endif
 
+UNALIGNED_ARCHS=i386 amd64
+ifneq (,$(findstring $(DEB_HOST_ARCH), $(UNALIGNED_ARCHS)))
+CFLAGS+=-DUNALIGNED_OK
+endif
 
 COPYLIST=*.h *.c *.in zlib.map configure zlib.3
 
