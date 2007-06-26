@@ -58,7 +58,7 @@ Description: compression library - runtime for Debian installer
 
 Package: lib64z1
 Architecture: sparc s390 i386 powerpc
-Depends: ${shlibs:Depends}, ${lib64:Depends}
+Depends: ${shlibs:Depends}
 Replaces: amd64-libs (<< 1.4)
 Description: compression library - 64 bit runtime
  zlib is a library implementing the deflate compression method found
