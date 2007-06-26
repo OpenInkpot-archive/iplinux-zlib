@@ -77,7 +77,7 @@ Description: compression library - 64 bit development
  files for building 64 bit applications.
 
 Package: lib32z1
-Architecture: amd64 ppc64
+Architecture: amd64 ppc64 kfreebsd-amd64
 Depends: ${shlibs:Depends}
 Replaces: ia32-libs (<< 1.5)
 Description: compression library - 32 bit runtime
@@ -87,7 +87,7 @@ Description: compression library - 32 bit runtime
 
 Package: lib32z1-dev
 Section: libdevel
-Architecture: amd64 ppc64
+Architecture: amd64 ppc64 kfreebsd-amd64
 Depends: lib32z1 (= ${binary:Version}), zlib1g-dev (= ${binary:Version}), lib32c-dev
 Provides: lib32z-dev
 Replaces: ia32-libs-dev (<< 1.5)
