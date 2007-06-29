@@ -3,7 +3,8 @@ Section: core
 Priority: optional
 Maintainer: Alexander Shishkin <virtuoso@slind.org>
 Standards-Version: 3.6.2
-XCS-Cross-Host-Build-Depends: debhelper (>= 4.2), dbs (>= 0.21), cross-toolchain
+XCS-Cross-Host-Build-Depends: debhelper (>= 4.2), dbs (>= 0.21)
+XCS-Cross-Build-Depends: cross-toolchain
 Build-Depends: debhelper (>= 4.2), dbs (>= 0.21), cross-toolchain
 
 Package: zlib1g
