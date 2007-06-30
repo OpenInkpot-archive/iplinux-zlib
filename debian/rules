@@ -36,7 +36,7 @@ EXTRA_INSTALL=install32
 EXTRA_BUILD=build32-stamp
 endif
 
-UNALIGNED_ARCHS=i386 amd64
+UNALIGNED_ARCHS=i386 amd64 kfreebsd-i386 kfreebsd-amd64 hurd-i386
 ifneq (,$(findstring $(DEB_HOST_ARCH), $(UNALIGNED_ARCHS)))
 CFLAGS+=-DUNALIGNED_OK
 endif
