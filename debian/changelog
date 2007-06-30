@@ -3,8 +3,9 @@ zlib (1:1.2.3.3.dfsg-3) unstable; urgency=low
   * Support building with UNALIGNED_OK and enable it on i386 and amd64.
     This seems to provide a small speedup in my tests (closes: #386357).
   * Build 32 bit version on KFreeBSD-amd64 (closes: #406018).
+  * Provide versioned dependency shlibs (closes: #431124).
 
- -- Mark Brown <broonie@debian.org>  Tue, 26 Jun 2007 18:18:31 +0100
+ -- Mark Brown <broonie@debian.org>  Sat, 30 Jun 2007 11:49:23 +0100
 
 zlib (1:1.2.3.3.dfsg-2) unstable; urgency=low
 

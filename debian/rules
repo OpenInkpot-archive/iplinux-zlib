@@ -138,7 +138,7 @@ binary-arch: build install $(EXTRA_INSTALL)
 	dh_strip -s --dbg-package=zlib1g-dbg
 	dh_compress -s
 	dh_fixperms -s
-	dh_makeshlibs -s
+	dh_makeshlibs -s -V"zlib1g (>= 1:1.2.3.3)"
 	dh_installdeb -s
 	dh_shlibdeps -s
 	dh_gencontrol -s
