@@ -29,6 +29,7 @@ Description: compression library - development
 
 Package: zlib1g-dbg
 Section: libdevel
+Priority: extra
 Architecture: any
 Depends: zlib1g (= ${binary:Version})
 Provides: libz-dbg
