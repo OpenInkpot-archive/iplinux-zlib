@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Mark Brown <broonie@debian.org>
 Standards-Version: 3.7.2
 XS-VCS-Bzr: http://bzr.debian.org/bzr/pkg-zlib/zlib/debian
-Build-Depends: debhelper (>= 4.2), quilt, gcc-multilib [amd64 i386 kfreebsd-amd64 powerpc ppc64 s390 sparc]
+Build-Depends: debhelper (>= 5), quilt, gcc-multilib [amd64 i386 kfreebsd-amd64 powerpc ppc64 s390 sparc]
 
 Package: zlib1g
 Architecture: any
