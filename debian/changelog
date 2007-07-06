@@ -1,3 +1,10 @@
+zlib (1:1.2.3.3.dfsg-4) unstable; urgency=low
+
+  * dh_makeshlibs needs to be handheld when building multiple library
+    packages (closes: #431873).
+
+ -- Mark Brown <broonie@debian.org>  Fri, 06 Jul 2007 19:26:23 +0100
+
 zlib (1:1.2.3.3.dfsg-3) unstable; urgency=low
 
   * Support building with UNALIGNED_OK and enable it on i386 and amd64.
