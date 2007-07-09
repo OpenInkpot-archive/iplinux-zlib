@@ -138,6 +138,13 @@ binary-arch: build install $(EXTRA_INSTALL)
 	dh_strip -s --dbg-package=zlib1g-dbg
 	dh_compress -s
 	dh_fixperms -s
+ifeq ($(DEB_HOST_ARCH),amd64)
+	# amd64 uses a totally different directory for some great reason
+	mkdir -p debian/lib32z1/emul/ia32-linux/usr
+	mv debian/lib32z1/usr/lib32 debian/lib32z1/emul/ia32-linux/usr/lib
+	mkdir -p debian/lib32z1-dev/emul/ia32-linux/usr
+	mv debian/lib32z1-dev/usr/lib32 debian/lib32z1-dev/emul/ia32-linux/usr/lib
+endif
 	dh_makeshlibs -pzlib1g -V"zlib1g (>= 1:1.2.3.3.dfsg-1)" --add-udeb=zlib1g-udeb
 	dh_makeshlibs -plib64z1 -V"lib64z1 (>= 1:1.2.3.3.dfsg-1)"
 	dh_makeshlibs -plib32z1 -V"lib32z1 (>= 1:1.2.3.3.dfsg-1)"

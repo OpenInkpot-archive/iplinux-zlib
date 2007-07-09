@@ -1,3 +1,10 @@
+zlib (1:1.2.3.3.dfsg-5) unstable; urgency=low
+
+  * x86_64 uses a non-standard directory for the 32 bit runtime so we need
+    to do something completely different there (closes: #432262).
+
+ -- Mark Brown <broonie@debian.org>  Mon, 09 Jul 2007 09:30:52 +0100
+
 zlib (1:1.2.3.3.dfsg-4) unstable; urgency=low
 
   * dh_makeshlibs needs to be handheld when building multiple library
