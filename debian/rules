@@ -49,7 +49,7 @@ configure-stamp: configure patch
 	if [ ! -f Makefile.stash ]; then cp Makefile Makefile.stash ; fi
 	if [ ! -f zlibdefs.h.stash ]; then cp zlibdefs.h zlibdefs.h.stash ; fi
 
-	CFLAGS="$(CFLAGS)" ./configure --shared --prefix=/usr
+	CC="$(DEB_HOST_GNU_TYPE)-gcc" CFLAGS="$(CFLAGS)" ./configure --shared --prefix=/usr
 
 	touch $@
 
