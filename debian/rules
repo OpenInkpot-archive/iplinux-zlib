@@ -13,11 +13,20 @@ include /usr/share/quilt/quilt.make
 
 # These are used for cross-compiling and for saving the configure script
 # from having to guess our platform (since we know it already)
+DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
 DEB_HOST_ARCH       ?= $(shell dpkg-architecture -qDEB_HOST_ARCH)
 DEB_HOST_ARCH_OS    ?= $(shell dpkg-architecture -qDEB_HOST_GNU_OS)
 
 CFLAGS = -Wall -g -D_REENTRANT
+
+# binutils doesn't supply the prefixed version normally like GCC does so
+# we can't just unconditionally use DEB_HOST_GNU_TYPE-ar
+ifeq ($(DEB_HOST_GNU_TYPE),$(DEB_BUILD_GNU_TYPE))
+	AR=ar
+else
+	AR=$(DEB_HOST_GNU_TYPE)-ar
+endif
 
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
 	CFLAGS += -O0
@@ -50,7 +59,7 @@ configure-stamp: configure patch
 	if [ ! -f Makefile.stash ]; then cp Makefile Makefile.stash ; fi
 	if [ ! -f zlibdefs.h.stash ]; then cp zlibdefs.h zlibdefs.h.stash ; fi
 
-	CC="$(DEB_HOST_GNU_TYPE)-gcc" CFLAGS="$(CFLAGS)" uname=$(DEB_HOST_ARCH_OS) ./configure --shared --prefix=/usr
+	AR=$(AR) CC="$(DEB_HOST_GNU_TYPE)-gcc" CFLAGS="$(CFLAGS)" uname=$(DEB_HOST_ARCH_OS) ./configure --shared --prefix=/usr
 
 	touch $@
 
@@ -59,7 +68,8 @@ configure64-stamp: configure patch
 
 	mkdir -p debian/64
 	cp $(COPYLIST) debian/64
-	cd debian/64 && CC="$(DEB_HOST_GNU_TYPE)-gcc -m64" CFLAGS="$(CFLAGS)" \
+	cd debian/64 && AR=$(AR) CC="$(DEB_HOST_GNU_TYPE)-gcc -m64" \
+	    CFLAGS="$(CFLAGS)" \
 	    uname=$(DEB_HOST_ARCH_OS) ./configure --shared --prefix=/usr  --libdir=\$${prefix}/usr/lib64
 	touch $@
 
@@ -68,7 +78,8 @@ configure32-stamp: configure patch
 
 	mkdir -p debian/32
 	cp $(COPYLIST) debian/32
-	cd debian/32 && CC="$(DEB_HOST_GNU_TYPE)-gcc -m32" CFLAGS="$(CFLAGS)" \
+	cd debian/32 && AR=$(AR) CC="$(DEB_HOST_GNU_TYPE)-gcc -m32" \
+	    CFLAGS="$(CFLAGS)" \
 	    uname=$(DEB_HOST_ARCH_OS) ./configure --shared --prefix=/usr --libdir=\$${prefix}/usr/lib32
 	touch $@
 
