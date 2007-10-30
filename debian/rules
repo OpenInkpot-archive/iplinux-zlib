@@ -59,7 +59,7 @@ configure-stamp: configure patch
 	if [ ! -f Makefile.stash ]; then cp Makefile Makefile.stash ; fi
 	if [ ! -f zlibdefs.h.stash ]; then cp zlibdefs.h zlibdefs.h.stash ; fi
 
-	AR=$(AR) CC="$(DEB_HOST_GNU_TYPE)-gcc" CFLAGS="$(CFLAGS)" uname=$(DEB_HOST_ARCH_OS) ./configure --shared --prefix=/usr
+	AR=$(AR) CC="$(DEB_HOST_GNU_TYPE)-gcc" CFLAGS="$(CFLAGS)" uname=GNU ./configure --shared --prefix=/usr
 
 	touch $@
 
@@ -70,7 +70,7 @@ configure64-stamp: configure patch
 	cp $(COPYLIST) debian/64
 	cd debian/64 && AR=$(AR) CC="$(DEB_HOST_GNU_TYPE)-gcc -m64" \
 	    CFLAGS="$(CFLAGS)" \
-	    uname=$(DEB_HOST_ARCH_OS) ./configure --shared --prefix=/usr  --libdir=\$${prefix}/usr/lib64
+	    uname=GNU ./configure --shared --prefix=/usr  --libdir=\$${prefix}/usr/lib64
 	touch $@
 
 configure32-stamp: configure patch
@@ -80,7 +80,7 @@ configure32-stamp: configure patch
 	cp $(COPYLIST) debian/32
 	cd debian/32 && AR=$(AR) CC="$(DEB_HOST_GNU_TYPE)-gcc -m32" \
 	    CFLAGS="$(CFLAGS)" \
-	    uname=$(DEB_HOST_ARCH_OS) ./configure --shared --prefix=/usr --libdir=\$${prefix}/usr/lib32
+	    uname=GNU ./configure --shared --prefix=/usr --libdir=\$${prefix}/usr/lib32
 	touch $@
 
 build: build-stamp $(EXTRA_BUILD)
