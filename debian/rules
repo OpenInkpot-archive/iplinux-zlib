@@ -107,8 +107,8 @@ clean: unpatch
 	dh_testdir
 	dh_testroot
 
-	-$(MAKE) -C contrib/minizip clean
-	-$(MAKE) distclean
+	$(MAKE) -C contrib/minizip clean
+	$(MAKE) distclean
 
 	rm -f build-stamp configure-stamp foo.gz 
 	rm -rf debian/64 build64-stamp configure64-stamp
