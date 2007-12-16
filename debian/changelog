@@ -1,3 +1,10 @@
+zlib (1:1.2.3.3.dfsg-8) unstable; urgency=low
+
+  * Add symbols files.  Version information is provided by the upstream
+    map file.  Architecture lists may need some adjustment.
+
+ -- Mark Brown <broonie@debian.org>  Sun, 16 Dec 2007 12:37:37 +0000
+
 zlib (1:1.2.3.3.dfsg-7) unstable; urgency=low
 
   * Hard code uname to GNU so configure script can cope with non-Linux 

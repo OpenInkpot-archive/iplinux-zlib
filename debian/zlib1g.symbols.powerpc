@@ -1,0 +1,2 @@
+#include "zlib-base.symbols"
+#include "zlib-64.symbols"

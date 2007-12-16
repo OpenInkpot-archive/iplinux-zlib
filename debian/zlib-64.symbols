@@ -1,0 +1,6 @@
+libz.so.1 zlib1g #MINVER#
+ adler32_combine64@Base 1:1.2.3.3.dfsg-7
+ crc32_combine64@Base 1:1.2.3.3.dfsg-7
+ gzopen64@Base 1:1.2.3.3.dfsg-7
+ gzseek64@Base 1:1.2.3.3.dfsg-7
+ gztell64@Base 1:1.2.3.3.dfsg-7
