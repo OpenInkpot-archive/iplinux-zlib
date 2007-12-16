@@ -2,7 +2,7 @@ Source: zlib
 Section: libs
 Priority: optional
 Maintainer: Mark Brown <broonie@debian.org>
-Standards-Version: 3.7.2
+Standards-Version: 3.7.3
 XS-VCS-Bzr: http://bzr.debian.org/bzr/pkg-zlib/zlib/debian
 Build-Depends: debhelper (>= 5), quilt, gcc-multilib [amd64 i386 kfreebsd-amd64 powerpc ppc64 s390 sparc]
 
