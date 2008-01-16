@@ -1,3 +1,9 @@
+zlib (1:1.2.3.3.dfsg-9) unstable; urgency=low
+
+  * Remove Debian revisions from symbol files.
+
+ -- Mark Brown <broonie@debian.org>  Wed, 16 Jan 2008 10:53:27 +0000
+
 zlib (1:1.2.3.3.dfsg-8) unstable; urgency=low
 
   * Add symbols files.  Version information is provided by the upstream
