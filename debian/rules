@@ -160,8 +160,12 @@ ifeq ($(DEB_HOST_ARCH),amd64)
 	mv debian/lib32z1-dev/usr/lib32 debian/lib32z1-dev/emul/ia32-linux/usr/lib
 endif
 	dh_makeshlibs -pzlib1g -V"zlib1g (>= 1:1.2.3.3.dfsg-1)" --add-udeb=zlib1g-udeb
+ifneq (,$(findstring $(DEB_HOST_ARCH), $(64-ARCHS)))
 	dh_makeshlibs -plib64z1 -V"lib64z1 (>= 1:1.2.3.3.dfsg-1)"
+endif
+ifneq (,$(findstring $(DEB_HOST_ARCH), $(32-ARCHS)))
 	dh_makeshlibs -plib32z1 -V"lib32z1 (>= 1:1.2.3.3.dfsg-1)"
+endif
 	dh_installdeb -s
 	dh_shlibdeps -s
 	dh_gencontrol -s
