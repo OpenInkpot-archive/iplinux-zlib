@@ -6,7 +6,7 @@ libz.so.1 zlib1g #MINVER#
  ZLIB_1.2.2.4@ZLIB_1.2.2.4 1:1.2.2.4
  ZLIB_1.2.2@ZLIB_1.2.2 1:1.2.2
  adler32@Base 1:1.1.4
- adler32_combine@ZLIB_1.2.2 1:1.1.2
+ adler32_combine@ZLIB_1.2.2 1:1.2.2
  compress2@Base 1:1.1.4
  compress@Base 1:1.1.4
  compressBound@ZLIB_1.2.0 1:1.2.0
@@ -62,5 +62,5 @@ libz.so.1 zlib1g #MINVER#
  inflateUndermine@Base 1:1.1.4
  uncompress@Base 1:1.1.4
  zError@Base 1:1.1.4
- zlibCompileFlags@ZLIB_1.2.0.2 1:1.1.4
+ zlibCompileFlags@ZLIB_1.2.0.2 1:1.2.0.2
  zlibVersion@Base 1:1.1.4
