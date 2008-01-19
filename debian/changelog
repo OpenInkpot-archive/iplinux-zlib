@@ -1,3 +1,9 @@
+zlib (1:1.2.3.3.dfsg-11) unstable; urgency=low
+
+  * Correct library names for cross libraries.
+
+ -- Mark Brown <broonie@debian.org>  Sat, 19 Jan 2008 22:28:44 +0000
+
 zlib (1:1.2.3.3.dfsg-10) unstable; urgency=low
 
   * dpkg-shlibdeps doesn't deal well with unbuilt packages (closes: 461474).
