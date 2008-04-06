@@ -1,3 +1,10 @@
+zlib (1:1.2.3.3.dfsg-12) unstable; urgency=low
+
+  * Apply patch from Arthur Loiret <arthur.loiret@u-psud.fr> implementing
+    triarch support for MIPS (closes: #474097).
+
+ -- Mark Brown <broonie@debian.org>  Sun, 06 Apr 2008 19:09:18 +0100
+
 zlib (1:1.2.3.3.dfsg-11) unstable; urgency=low
 
   * Correct library names for cross libraries.
