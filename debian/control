@@ -19,7 +19,7 @@ Description: compression library - runtime
  in gzip and PKZIP.  This package includes the shared library.
 
 Package: zlib1g-dev
-Section: core
+Section: libdevel
 Architecture: any
 Depends: zlib1g (= ${Source-Version}), cross-toolchain
 Conflicts: zlib1-dev

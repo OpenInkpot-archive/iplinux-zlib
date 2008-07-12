@@ -1,3 +1,10 @@
+zlib (1:1.2.3-4.slind3.oi1) unstable; urgency=low
+
+  * First OI build:
+    - -dev package moved to libdevel.
+
+ -- Mikhail Gusarov <dottedmag@dottedmag.net>  Sat, 12 Jul 2008 19:30:30 +0700
+
 zlib (1:1.2.3-4.slind3) testing; urgency=low
 
   * Fix of build depends
