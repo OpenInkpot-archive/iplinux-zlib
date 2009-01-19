@@ -28,13 +28,13 @@ else
 CC=$(DEB_HOST_GNU_TYPE)-gcc
 endif
 
-64-ARCHS=s390 sparc
+64-ARCHS=
 ifneq (,$(findstring $(DEB_HOST_ARCH), $(64-ARCHS)))
 DOBUILD		+= $(STAMP_DIR)/build-64 $(STAMP_DIR)/build-64-nopic
 DOBINARY	:= binary-lib64z1 binary-lib64z1-dev
 endif
 
-32-ARCHS=amd64 ppc64
+32-ARCHS=
 ifneq (,$(findstring $(DEB_HOST_ARCH), $(32-ARCHS)))
 DOBUILD		+= $(STAMP_DIR)/build-32 $(STAMP_DIR)/build-32-nopic
 DOBINARY	:= binary-lib32z1 binary-lib32z1-dev
