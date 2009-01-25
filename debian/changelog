@@ -1,3 +1,14 @@
+zlib (1:1.2.3.3.dfsg-12.ip1) unstable; urgency=low
+
+  * First build for Inkpump:
+    - section changed,
+    - maintainer changed,
+    - removed unneded packages,
+    - library packages renamed to drop historical warts,
+    - adjusted dependencies.
+
+ -- Mikhail Gusarov <dottedmag@dottedmag.net>  Tue, 06 Jan 2009 06:38:28 +0600
+
 zlib (1:1.2.3.3.dfsg-12) unstable; urgency=low
 
   * Apply patch from Arthur Loiret <arthur.loiret@u-psud.fr> implementing
