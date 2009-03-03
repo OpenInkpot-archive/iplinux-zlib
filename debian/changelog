@@ -1,6 +1,6 @@
 zlib (1:1.2.3.3.dfsg-12.ip1) unstable; urgency=low
 
-  * First build for Inkpump:
+  * First build for Iplinux:
     - section changed,
     - maintainer changed,
     - removed unneded packages,
