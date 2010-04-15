@@ -29,7 +29,6 @@ configure-stamp: debian/stamp-patched
 	dh_testdir
 
 	if [ ! -f Makefile.stash ]; then cp Makefile Makefile.stash ; fi
-	if [ ! -f zlibdefs.h.stash ]; then cp zlibdefs.h zlibdefs.h.stash ; fi
 
 	AR="$(DEB_HOST_GNU_TYPE)-ar" CC="$(DEB_HOST_GNU_TYPE)-gcc" CFLAGS="$(CFLAGS)" uname=GNU ./configure --shared --prefix=/usr
 
@@ -53,7 +52,6 @@ clean: unpatch
 
 	rm -f build-stamp configure-stamp foo.gz 
 	-mv Makefile.stash Makefile
-	-mv zlibdefs.h.stash zlibdefs.h
 
 	dh_clean 
 
