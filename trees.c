@@ -1,5 +1,5 @@
 /* trees.c -- output deflated data using Huffman coding
- * Copyright (C) 1995-2006 Jean-loup Gailly
+ * Copyright (C) 1995-2009 Jean-loup Gailly
  * detect_data_type() function provided freely by Cosmin Truta, 2006
  * For conditions of distribution and use, see copyright notice in zlib.h
  */
@@ -204,12 +204,12 @@ local void send_bits(s, value, length)
      * unused bits in value.
      */
     if (s->bi_valid > (int)Buf_size - length) {
-        s->bi_buf |= (value << s->bi_valid);
+        s->bi_buf |= (ush)value << s->bi_valid;
         put_short(s, s->bi_buf);
         s->bi_buf = (ush)value >> (Buf_size - s->bi_valid);
         s->bi_valid += length - Buf_size;
     } else {
-        s->bi_buf |= value << s->bi_valid;
+        s->bi_buf |= (ush)value << s->bi_valid;
         s->bi_valid += length;
     }
 }
@@ -219,12 +219,12 @@ local void send_bits(s, value, length)
 { int len = length;\
   if (s->bi_valid > (int)Buf_size - len) {\
     int val = value;\
-    s->bi_buf |= (val << s->bi_valid);\
+    s->bi_buf |= (ush)val << s->bi_valid;\
     put_short(s, s->bi_buf);\
     s->bi_buf = (ush)val >> (Buf_size - s->bi_valid);\
     s->bi_valid += len - Buf_size;\
   } else {\
-    s->bi_buf |= (value) << s->bi_valid;\
+    s->bi_buf |= (ush)(value) << s->bi_valid;\
     s->bi_valid += len;\
   }\
 }
@@ -867,13 +867,13 @@ local void send_all_trees(s, lcodes, dcodes, blcodes)
 /* ===========================================================================
  * Send a stored block
  */
-void _tr_stored_block(s, buf, stored_len, eof)
+void _tr_stored_block(s, buf, stored_len, last)
     deflate_state *s;
     charf *buf;       /* input block */
     ulg stored_len;   /* length of input block */
-    int eof;          /* true if this is the last block for a file */
+    int last;         /* one if this is the last block for a file */
 {
-    send_bits(s, (STORED_BLOCK<<1)+eof, 3);  /* send block type */
+    send_bits(s, (STORED_BLOCK<<1)+last, 3);    /* send block type */
 #ifdef DEBUG
     s->compressed_len = (s->compressed_len + 3 + 7) & (ulg)~7L;
     s->compressed_len += (stored_len + 4) << 3;
@@ -921,11 +921,11 @@ void _tr_align(s)
  * Determine the best encoding for the current block: dynamic trees, static
  * trees or store, and output the encoded block to the zip file.
  */
-void _tr_flush_block(s, buf, stored_len, eof)
+void _tr_flush_block(s, buf, stored_len, last)
     deflate_state *s;
     charf *buf;       /* input block, or NULL if too old */
     ulg stored_len;   /* length of input block */
-    int eof;          /* true if this is the last block for a file */
+    int last;         /* one if this is the last block for a file */
 {
     ulg opt_lenb, static_lenb; /* opt_len and static_len in bytes */
     int max_blindex = 0;  /* index of last bit length code of non zero freq */
@@ -981,20 +981,20 @@ void _tr_flush_block(s, buf, stored_len, eof)
          * successful. If LIT_BUFSIZE <= WSIZE, it is never too late to
          * transform a block into a stored block.
          */
-        _tr_stored_block(s, buf, stored_len, eof);
+        _tr_stored_block(s, buf, stored_len, last);
 
 #ifdef FORCE_STATIC
     } else if (static_lenb >= 0) { /* force static trees */
 #else
     } else if (s->strategy == Z_FIXED || static_lenb == opt_lenb) {
 #endif
-        send_bits(s, (STATIC_TREES<<1)+eof, 3);
+        send_bits(s, (STATIC_TREES<<1)+last, 3);
         compress_block(s, (ct_data *)static_ltree, (ct_data *)static_dtree);
 #ifdef DEBUG
         s->compressed_len += 3 + s->static_len;
 #endif
     } else {
-        send_bits(s, (DYN_TREES<<1)+eof, 3);
+        send_bits(s, (DYN_TREES<<1)+last, 3);
         send_all_trees(s, s->l_desc.max_code+1, s->d_desc.max_code+1,
                        max_blindex+1);
         compress_block(s, (ct_data *)s->dyn_ltree, (ct_data *)s->dyn_dtree);
@@ -1008,14 +1008,14 @@ void _tr_flush_block(s, buf, stored_len, eof)
      */
     init_block(s);
 
-    if (eof) {
+    if (last) {
         bi_windup(s);
 #ifdef DEBUG
         s->compressed_len += 7;  /* align on byte boundary */
 #endif
     }
     Tracev((stderr,"\ncomprlen %lu(%lu) ", s->compressed_len>>3,
-           s->compressed_len-7*eof));
+           s->compressed_len-7*last));
 }
 
 /* ===========================================================================
