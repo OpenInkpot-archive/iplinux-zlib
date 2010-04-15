@@ -3,8 +3,8 @@ Section: core
 Priority: optional
 Maintainer: Mikhail Gusarov <dottedmag@dottedmag.net>
 Standards-Version: 3.8.0
-Build-Depends: debhelper (>= 5), quilt
-XCS-Cross-Host-Build-Depends: debhelper (>= 5), quilt
+Build-Depends: debhelper (>= 5)
+XCS-Cross-Host-Build-Depends: debhelper (>= 5)
 
 Package: libz1
 Architecture: any

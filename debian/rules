@@ -9,8 +9,6 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-include /usr/share/quilt/quilt.make
-
 CFLAGS = -Wall -g -D_REENTRANT
 
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
@@ -25,7 +23,7 @@ CFLAGS+=-DUNALIGNED_OK
 endif
 
 configure: configure-stamp
-configure-stamp: debian/stamp-patched
+configure-stamp:
 	dh_testdir
 
 	if [ ! -f Makefile.stash ]; then cp Makefile Makefile.stash ; fi
@@ -43,7 +41,7 @@ build-stamp: configure-stamp
 
 	touch $@
 
-clean: unpatch
+clean:
 	dh_testdir
 	dh_testroot
 
